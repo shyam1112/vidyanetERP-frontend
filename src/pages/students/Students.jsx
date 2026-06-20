@@ -111,52 +111,81 @@ export default function Students() {
         ) : students.length === 0 ? (
           <div className="p-8 text-center text-gray-500">No students found</div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-gray-50 border-b">
-                <tr>
-                  {['Student ID', 'Name', 'Class', 'Section', 'Roll No', 'Gender', 'Status', 'Actions'].map((h) => (
-                    <th key={h} className="text-left px-4 py-3 text-gray-600 font-medium">{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {students.map((s) => (
-                  <tr key={s._id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-4 py-3 font-mono text-xs text-gray-600">{s.studentId}</td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-3">
-                        {s.photo ? (
-                          <img src={s.photo} alt="" className="w-8 h-8 rounded-full object-cover" />
-                        ) : (
-                          <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-medium text-xs">
-                            {s.firstName[0]}{s.lastName[0]}
-                          </div>
-                        )}
-                        <span className="font-medium text-gray-900">{s.firstName} {s.lastName}</span>
-                      </div>
-                    </td>
-                    <td className="px-4 py-3">{s.class}</td>
-                    <td className="px-4 py-3">{s.section}</td>
-                    <td className="px-4 py-3">{s.rollNumber}</td>
-                    <td className="px-4 py-3 capitalize">{s.gender}</td>
-                    <td className="px-4 py-3">
-                      <Badge variant={s.isActive ? 'success' : 'danger'}>
-                        {s.isActive ? 'Active' : 'Inactive'}
-                      </Badge>
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex gap-2">
-                        <button onClick={() => setViewStudentId(s._id)} className="text-gray-500 hover:text-gray-800 text-xs font-medium">View</button>
-                        <button onClick={() => handleEdit(s)} className="text-indigo-600 hover:text-indigo-800 text-xs font-medium">Edit</button>
-                        <button onClick={() => handleDelete(s._id)} className="text-red-600 hover:text-red-800 text-xs font-medium">Delete</button>
-                      </div>
-                    </td>
+          <>
+            {/* Mobile cards */}
+            <div className="divide-y divide-gray-100 sm:hidden">
+              {students.map((s) => (
+                <div key={s._id} className="p-4 flex items-center gap-3">
+                  {s.photo ? (
+                    <img src={s.photo} alt="" className="w-11 h-11 rounded-full object-cover shrink-0" />
+                  ) : (
+                    <div className="w-11 h-11 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-sm shrink-0">
+                      {s.firstName[0]}{s.lastName[0]}
+                    </div>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-gray-900 truncate">{s.firstName} {s.lastName}</p>
+                    <p className="text-xs text-gray-500 mt-0.5">
+                      Class {s.class}-{s.section} · Roll {s.rollNumber} · <span className="font-mono">{s.studentId}</span>
+                    </p>
+                    <div className="flex items-center gap-2 mt-1.5">
+                      <Badge variant={s.isActive ? 'success' : 'danger'}>{s.isActive ? 'Active' : 'Inactive'}</Badge>
+                      <span className="text-xs text-gray-400 capitalize">{s.gender}</span>
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-1.5 shrink-0">
+                    <button onClick={() => setViewStudentId(s._id)} className="text-xs text-gray-500 font-medium px-2.5 py-1 rounded-lg bg-gray-100 hover:bg-gray-200">View</button>
+                    <button onClick={() => handleEdit(s)} className="text-xs text-indigo-600 font-medium px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100">Edit</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Desktop table */}
+            <div className="hidden sm:block overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-gray-50 border-b">
+                  <tr>
+                    {['Student ID', 'Name', 'Class', 'Roll No', 'Gender', 'Status', 'Actions'].map((h) => (
+                      <th key={h} className="text-left px-4 py-3 text-gray-600 font-medium">{h}</th>
+                    ))}
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {students.map((s) => (
+                    <tr key={s._id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-4 py-3 font-mono text-xs text-gray-600">{s.studentId}</td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-3">
+                          {s.photo ? (
+                            <img src={s.photo} alt="" className="w-8 h-8 rounded-full object-cover" />
+                          ) : (
+                            <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-medium text-xs">
+                              {s.firstName[0]}{s.lastName[0]}
+                            </div>
+                          )}
+                          <span className="font-medium text-gray-900">{s.firstName} {s.lastName}</span>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3">{s.class}-{s.section}</td>
+                      <td className="px-4 py-3">{s.rollNumber}</td>
+                      <td className="px-4 py-3 capitalize">{s.gender}</td>
+                      <td className="px-4 py-3">
+                        <Badge variant={s.isActive ? 'success' : 'danger'}>{s.isActive ? 'Active' : 'Inactive'}</Badge>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex gap-2">
+                          <button onClick={() => setViewStudentId(s._id)} className="text-gray-500 hover:text-gray-800 text-xs font-medium">View</button>
+                          <button onClick={() => handleEdit(s)} className="text-indigo-600 hover:text-indigo-800 text-xs font-medium">Edit</button>
+                          <button onClick={() => handleDelete(s._id)} className="text-red-600 hover:text-red-800 text-xs font-medium">Delete</button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
 
         {total > limit && (

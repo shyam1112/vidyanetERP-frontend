@@ -15,14 +15,14 @@ const fmt = (v) => `₹${Number(v).toLocaleString('en-IN')}`;
 const StatCard = ({ title, value, icon, color, onClick }) => (
   <div
     onClick={onClick}
-    className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-shadow cursor-pointer"
+    className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition-shadow cursor-pointer active:scale-95"
   >
     <div className="flex items-center justify-between">
       <div>
-        <p className="text-sm text-gray-500">{title}</p>
-        <p className={`text-2xl font-bold mt-1 ${color}`}>{value ?? '—'}</p>
+        <p className="text-xs sm:text-sm text-gray-500">{title}</p>
+        <p className={`text-xl sm:text-2xl font-bold mt-1 ${color}`}>{value ?? '—'}</p>
       </div>
-      <div className="text-3xl">{icon}</div>
+      <div className="text-2xl sm:text-3xl">{icon}</div>
     </div>
   </div>
 );
@@ -79,20 +79,20 @@ export default function Dashboard() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Dashboard</h2>
-          <p className="text-gray-500 mt-1 text-sm">Welcome to Vidyanet ERP</p>
+          <h2 className="text-lg sm:text-2xl font-bold text-gray-900">Dashboard</h2>
+          <p className="text-gray-500 mt-0.5 text-xs sm:text-sm">Welcome to Vidyanet ERP</p>
         </div>
         <select
           value={year}
           onChange={(e) => setYear(e.target.value)}
-          className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="border border-gray-300 rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
         >
           {ACADEMIC_YEARS.map((y) => <option key={y} value={y}>{y}</option>)}
         </select>
       </div>
 
       {/* Stat Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <StatCard title="Total Students" value={students} icon="🎒" color="text-indigo-600" onClick={() => navigate('/students')} />
         <StatCard title="Fees Collected" value={fmt(totalCollected)} icon="✅" color="text-green-600" onClick={() => navigate('/fees')} />
         <StatCard title="Fees Pending" value={fmt(totalPending)} icon="⏳" color="text-yellow-600" onClick={() => navigate('/fees')} />
@@ -105,11 +105,11 @@ export default function Dashboard() {
       </div>
 
       {/* Charts row */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
 
         {/* Bar chart — per student */}
-        <div className="lg:col-span-2 bg-white rounded-xl p-5 shadow-sm border border-gray-100">
-          <h3 className="font-semibold text-gray-900 mb-4">
+        <div className="lg:col-span-2 bg-white rounded-xl p-4 sm:p-5 shadow-sm border border-gray-100">
+          <h3 className="font-semibold text-gray-900 mb-3 text-sm sm:text-base">
             Fees per Student
             <span className="ml-2 text-xs font-normal text-gray-400">({chartData.length} students)</span>
           </h3>
@@ -141,8 +141,8 @@ export default function Dashboard() {
         </div>
 
         {/* Pie chart — status breakdown */}
-        <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
-          <h3 className="font-semibold text-gray-900 mb-4">Fee Status Breakdown</h3>
+        <div className="bg-white rounded-xl p-4 sm:p-5 shadow-sm border border-gray-100">
+          <h3 className="font-semibold text-gray-900 mb-3 text-sm sm:text-base">Fee Status Breakdown</h3>
           {pieData.length === 0 ? (
             <div className="flex items-center justify-center h-52 text-gray-400 text-sm">No data</div>
           ) : (

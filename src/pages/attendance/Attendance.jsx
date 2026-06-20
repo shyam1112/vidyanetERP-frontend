@@ -111,42 +111,42 @@ function MarkTab() {
     <div className="space-y-4">
       {/* Filters */}
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
-        <div className="flex flex-wrap gap-3 items-end">
-          <div>
+        <div className="grid grid-cols-3 sm:flex sm:flex-wrap gap-2 sm:gap-3 items-end">
+          <div className="col-span-3 sm:col-span-1">
             <label className="block text-xs font-medium text-gray-500 mb-1">Date</label>
             <input
               type="date"
               value={date}
               max={todayStr()}
               onChange={(e) => setDate(e.target.value)}
-              className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
           <div>
             <label className="block text-xs font-medium text-gray-500 mb-1">Class</label>
             <select value={cls} onChange={(e) => setCls(e.target.value)}
-              className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-              <option value="">Select</option>
-              {CLASSES.map((c) => <option key={c} value={c}>Class {c}</option>)}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+              <option value="">Class</option>
+              {CLASSES.map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
           </div>
           <div>
             <label className="block text-xs font-medium text-gray-500 mb-1">Section</label>
             <select value={section} onChange={(e) => setSection(e.target.value)}
-              className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-              <option value="">Select</option>
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+              <option value="">Sec</option>
               {SECTIONS.map((s) => <option key={s} value={s}>{s}</option>)}
             </select>
           </div>
 
           {students.length > 0 && (
-            <div className="flex gap-2 ml-auto">
+            <div className="col-span-3 sm:col-span-1 flex gap-2 sm:ml-auto">
               <button onClick={() => markAll('present')}
-                className="text-xs font-medium px-3 py-2 rounded-lg bg-green-100 text-green-700 hover:bg-green-200">
+                className="flex-1 text-xs font-medium px-3 py-2 rounded-lg bg-green-100 text-green-700 hover:bg-green-200">
                 ✓ All Present
               </button>
               <button onClick={() => markAll('absent')}
-                className="text-xs font-medium px-3 py-2 rounded-lg bg-red-100 text-red-700 hover:bg-red-200">
+                className="flex-1 text-xs font-medium px-3 py-2 rounded-lg bg-red-100 text-red-700 hover:bg-red-200">
                 ✗ All Absent
               </button>
             </div>
@@ -203,8 +203,8 @@ function MarkTab() {
             </div>
           )}
 
-          {/* Table header */}
-          <div className="grid grid-cols-12 gap-2 bg-gray-50 px-4 py-2.5 border-b border-gray-200 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+          {/* Table header — hidden on mobile */}
+          <div className="hidden sm:grid grid-cols-12 gap-2 bg-gray-50 px-4 py-2.5 border-b border-gray-200 text-xs font-semibold text-gray-500 uppercase tracking-wide">
             <div className="col-span-1">#</div>
             <div className="col-span-5">Student</div>
             <div className="col-span-4">Status</div>
@@ -217,45 +217,54 @@ function MarkTab() {
               const currentStatus = statusMap[s._id] || 'absent';
               const cfg = STATUS[currentStatus];
               return (
-                <div
-                  key={s._id}
-                  className={`grid grid-cols-12 gap-2 px-4 py-3 items-center transition-colors ${cfg.light}`}
-                >
-                  <div className="col-span-1 text-xs text-gray-400 font-mono">{String(idx + 1).padStart(2, '0')}</div>
-                  <div className="col-span-5 flex items-center gap-2 min-w-0">
-                    <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0 ${cfg.bg}`}>
+                <div key={s._id} className={`transition-colors ${cfg.light}`}>
+                  {/* Mobile layout */}
+                  <div className="sm:hidden flex items-center gap-3 px-4 py-3">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0 ${cfg.bg}`}>
                       {s.firstName[0]}{s.lastName[0]}
                     </div>
-                    <div className="min-w-0">
+                    <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-gray-900 truncate">{s.firstName} {s.lastName}</p>
                       <p className="text-xs text-gray-400">Roll {s.rollNumber}</p>
                     </div>
+                    <div className="flex gap-1 shrink-0">
+                      {Object.entries(STATUS).map(([key, c]) => (
+                        <button key={key} type="button" onClick={() => setStatus(s._id, key)}
+                          className={`w-9 h-9 rounded-lg text-xs font-bold transition-all ${
+                            currentStatus === key ? `${c.bg} text-white ring-2 ${c.ring} ring-offset-1` : 'bg-white border border-gray-200 text-gray-500'
+                          }`} title={c.full}>
+                          {c.label}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                  <div className="col-span-4 flex gap-1">
-                    {Object.entries(STATUS).map(([key, cfg]) => (
-                      <button
-                        key={key}
-                        type="button"
-                        onClick={() => setStatus(s._id, key)}
-                        className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${
-                          currentStatus === key
-                            ? `${cfg.bg} text-white ring-2 ${cfg.ring} ring-offset-1`
-                            : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
-                        }`}
-                        title={cfg.full}
-                      >
-                        {cfg.label}
-                      </button>
-                    ))}
-                  </div>
-                  <div className="col-span-2">
-                    <input
-                      type="text"
-                      value={remarksMap[s._id] || ''}
-                      onChange={(e) => setRemarksMap((p) => ({ ...p, [s._id]: e.target.value }))}
-                      placeholder="Note"
-                      className="w-full border border-gray-200 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-400 bg-white"
-                    />
+
+                  {/* Desktop layout */}
+                  <div className="hidden sm:grid grid-cols-12 gap-2 px-4 py-3 items-center">
+                    <div className="col-span-1 text-xs text-gray-400 font-mono">{String(idx + 1).padStart(2, '0')}</div>
+                    <div className="col-span-5 flex items-center gap-2 min-w-0">
+                      <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0 ${cfg.bg}`}>
+                        {s.firstName[0]}{s.lastName[0]}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium text-gray-900 truncate">{s.firstName} {s.lastName}</p>
+                        <p className="text-xs text-gray-400">Roll {s.rollNumber}</p>
+                      </div>
+                    </div>
+                    <div className="col-span-4 flex gap-1">
+                      {Object.entries(STATUS).map(([key, c]) => (
+                        <button key={key} type="button" onClick={() => setStatus(s._id, key)}
+                          className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${
+                            currentStatus === key ? `${c.bg} text-white ring-2 ${c.ring} ring-offset-1` : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                          }`} title={c.full}>
+                          {c.label}
+                        </button>
+                      ))}
+                    </div>
+                    <div className="col-span-2">
+                      <input type="text" value={remarksMap[s._id] || ''} onChange={(e) => setRemarksMap((p) => ({ ...p, [s._id]: e.target.value }))}
+                        placeholder="Note" className="w-full border border-gray-200 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-400 bg-white" />
+                    </div>
                   </div>
                 </div>
               );

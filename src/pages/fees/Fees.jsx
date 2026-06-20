@@ -73,28 +73,28 @@ export default function Fees() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-3">
         <div>
-          <h2 className="text-xl font-bold text-gray-900">Fees</h2>
-          <p className="text-sm text-gray-500">{total} records</p>
+          <h2 className="text-lg sm:text-xl font-bold text-gray-900">Fees</h2>
+          <p className="text-xs sm:text-sm text-gray-500">{total} records</p>
         </div>
-        <button onClick={() => { setEditFee(null); setShowModal(true); }} className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700">
-          + Add Fee Record
+        <button onClick={() => { setEditFee(null); setShowModal(true); }} className="bg-indigo-600 text-white px-3 sm:px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 shrink-0">
+          + Add Fee
         </button>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex gap-3 flex-wrap">
-        <select value={filters.status} onChange={setFilter('status')} className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 sm:p-4 grid grid-cols-2 sm:flex gap-2 sm:gap-3 flex-wrap">
+        <select value={filters.status} onChange={setFilter('status')} className="w-full border border-gray-300 rounded-lg px-2 sm:px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
           <option value="">All Status</option>
           {['paid', 'pending', 'overdue', 'partial'].map((s) => <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>)}
         </select>
-        <select value={filters.feeType} onChange={setFilter('feeType')} className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        <select value={filters.feeType} onChange={setFilter('feeType')} className="w-full border border-gray-300 rounded-lg px-2 sm:px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
           <option value="">All Types</option>
           {['tuition', 'transport', 'library', 'sports', 'laboratory', 'examination', 'other'].map((t) => (
             <option key={t} value={t}>{t.charAt(0).toUpperCase() + t.slice(1)}</option>
           ))}
         </select>
-        <select value={filters.academicYear} onChange={setFilter('academicYear')} className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        <select value={filters.academicYear} onChange={setFilter('academicYear')} className="col-span-2 sm:col-span-1 w-full border border-gray-300 rounded-lg px-2 sm:px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
           <option value="">All Years</option>
           {ACADEMIC_YEARS.map((y) => <option key={y} value={y}>{y}</option>)}
         </select>
@@ -106,8 +106,50 @@ export default function Fees() {
         ) : fees.length === 0 ? (
           <div className="p-8 text-center text-gray-500">No fee records found</div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+          <div className="overflow-x-auto sm:overflow-x-auto">
+            {/* Mobile cards */}
+            <div className="divide-y divide-gray-100 sm:hidden">
+              {fees.map((f) => {
+                const pct = f.finalAmount > 0 ? Math.round(((f.paidAmount||0)/f.finalAmount)*100) : 0;
+                return (
+                  <div key={f._id} className="p-4 space-y-2">
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <p className="font-semibold text-gray-900">{f.student?.firstName} {f.student?.lastName}</p>
+                        <p className="text-xs text-gray-400">Class {f.student?.class}-{f.student?.section} · {f.student?.studentId}</p>
+                      </div>
+                      <Badge variant={statusVariant[f.status] || 'default'}>{f.status}</Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-base font-bold text-gray-900">₹{(f.finalAmount||0).toLocaleString('en-IN')}</p>
+                        {f.status === 'partial' && (
+                          <p className="text-xs text-green-600">₹{(f.paidAmount||0).toLocaleString('en-IN')} paid · Balance ₹{((f.finalAmount||0)-(f.paidAmount||0)).toLocaleString('en-IN')}</p>
+                        )}
+                      </div>
+                      <div className="flex gap-2">
+                        <button onClick={() => setViewFeeId(f._id)} className="text-xs px-2.5 py-1.5 rounded-lg bg-gray-100 text-gray-600 font-medium">View</button>
+                        {['pending','partial','overdue'].includes(f.status) && (
+                          <button onClick={() => { setEditFee(f); setShowModal(true); }} className="text-xs px-2.5 py-1.5 rounded-lg bg-green-100 text-green-700 font-medium">Pay</button>
+                        )}
+                        <button onClick={() => { setEditFee(f); setShowModal(true); }} className="text-xs px-2.5 py-1.5 rounded-lg bg-indigo-50 text-indigo-600 font-medium">Edit</button>
+                      </div>
+                    </div>
+                    {f.status === 'partial' && f.finalAmount > 0 && (
+                      <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                        <div className="h-full bg-amber-400 rounded-full" style={{width:`${pct}%`}} />
+                      </div>
+                    )}
+                    {(f.feeItems||[]).length > 0 && (
+                      <p className="text-xs text-gray-400">{f.feeItems.map(i => i.feeType).join(' · ')}</p>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Desktop table */}
+            <table className="hidden sm:table w-full text-sm">
               <thead className="bg-gray-50 border-b">
                 <tr>
                   {['Student', 'Class', 'Fee Type', 'Amount', 'Paid Date', 'Status', 'Actions'].map((h) => (
