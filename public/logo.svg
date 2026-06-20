@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Background -->
+  <rect width="512" height="512" rx="96" fill="#4338ca"/>
+  <!-- Book shape -->
+  <rect x="120" y="140" width="272" height="200" rx="12" fill="#fff" opacity="0.15"/>
+  <!-- Book spine -->
+  <rect x="244" y="140" width="8" height="200" fill="#fff" opacity="0.3"/>
+  <!-- Left page lines -->
+  <rect x="140" y="175" width="92" height="8" rx="4" fill="#fff" opacity="0.8"/>
+  <rect x="140" y="200" width="80" height="8" rx="4" fill="#fff" opacity="0.6"/>
+  <rect x="140" y="225" width="88" height="8" rx="4" fill="#fff" opacity="0.6"/>
+  <rect x="140" y="250" width="74" height="8" rx="4" fill="#fff" opacity="0.6"/>
+  <rect x="140" y="275" width="86" height="8" rx="4" fill="#fff" opacity="0.6"/>
+  <!-- Right page lines -->
+  <rect x="264" y="175" width="92" height="8" rx="4" fill="#fff" opacity="0.8"/>
+  <rect x="264" y="200" width="80" height="8" rx="4" fill="#fff" opacity="0.6"/>
+  <rect x="264" y="225" width="88" height="8" rx="4" fill="#fff" opacity="0.6"/>
+  <rect x="264" y="250" width="74" height="8" rx="4" fill="#fff" opacity="0.6"/>
+  <rect x="264" y="275" width="86" height="8" rx="4" fill="#fff" opacity="0.6"/>
+  <!-- Graduation cap -->
+  <polygon points="256,80 320,110 256,140 192,110" fill="#fbbf24"/>
+  <rect x="312" y="110" width="8" height="36" rx="4" fill="#fbbf24"/>
+  <circle cx="316" cy="150" r="8" fill="#fbbf24"/>
+  <!-- V letter -->
+  <text x="256" y="390" font-family="Arial, sans-serif" font-size="80" font-weight="900" fill="#fff" text-anchor="middle" opacity="0.9">V</text>
+</svg>
